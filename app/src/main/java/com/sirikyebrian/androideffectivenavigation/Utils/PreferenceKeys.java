@@ -1,7 +1,7 @@
 package com.sirikyebrian.androideffectivenavigation.Utils;
 
 /**
- * Created by Sirikye Brian on 8/7/2019.
+ * Created by Sirikye John on 8/7/2019.
  * bryanmuloni@gmail.com
  */
 public class PreferenceKeys {

@@ -4,13 +4,18 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.sirikyebrian.androideffectivenavigation.Utils.IMainActivity;
 import com.sirikyebrian.androideffectivenavigation.Utils.PreferenceKeys;
+import com.sirikyebrian.androideffectivenavigation.fragments.HomeFragment;
+import com.sirikyebrian.androideffectivenavigation.fragments.ViewProfileFragment;
+import com.sirikyebrian.androideffectivenavigation.models.User;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IMainActivity {
     private static final String TAG = "MainActivity";
 
     @Override
@@ -18,6 +23,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         isFirstLogin();
+        init();
+    }
+
+    private void init() {
+        HomeFragment homeFragment = new HomeFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_content_frame, homeFragment,
+                getString(R.string.tag_fragment_home));
+        transaction.addToBackStack(getString(R.string.tag_fragment_home));
+        transaction.commit();
     }
 
     private void isFirstLogin() {
@@ -45,5 +60,19 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         }
+    }
+
+    @Override
+    public void inflateViewProfileFragment(User user) {
+        ViewProfileFragment profileFragment = new ViewProfileFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.intent_user),user);
+        profileFragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_content_frame, profileFragment,
+                getString(R.string.tag_fragment_view_profile));
+        transaction.addToBackStack(getString(R.string.tag_fragment_view_profile));
+        transaction.commit();
     }
 }
