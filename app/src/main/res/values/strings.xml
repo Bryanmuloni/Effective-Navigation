@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Android Effective Navigation</string>
+    <string name="logo_banner">Tabian Dating</string>
+    <string name="first_time_user_message">I noticed this is your first time login. Make sure you
+        input
+        your preferences in the Settings screen so we can find potential matches.</string>
+</resources>
