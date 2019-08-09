@@ -4,26 +4,87 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.sirikyebrian.androideffectivenavigation.Utils.IMainActivity;
 import com.sirikyebrian.androideffectivenavigation.Utils.PreferenceKeys;
+import com.sirikyebrian.androideffectivenavigation.fragments.ChatFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.HomeFragment;
+import com.sirikyebrian.androideffectivenavigation.fragments.MessagesFragment;
+import com.sirikyebrian.androideffectivenavigation.fragments.SavedConnectionsFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.ViewProfileFragment;
+import com.sirikyebrian.androideffectivenavigation.models.Message;
 import com.sirikyebrian.androideffectivenavigation.models.User;
 
-public class MainActivity extends AppCompatActivity implements IMainActivity {
+public class MainActivity extends AppCompatActivity implements IMainActivity, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
+
+    private BottomNavigationViewEx mBottomNavigationViewEx;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mBottomNavigationViewEx = findViewById(R.id.bottom_nav_view);
+        mBottomNavigationViewEx.setOnNavigationItemSelectedListener(this);
+
         isFirstLogin();
+        initBottomNavigationView();
         init();
+    }
+
+    private void initBottomNavigationView() {
+        Log.d(TAG, "initBottomNavigationView: initializing bottom navigation view");
+        mBottomNavigationViewEx.enableAnimation(false);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.nav_home:{
+                Log.d(TAG, "onNavigationItemSelected: HomeFragment");
+                HomeFragment homeFragment = new HomeFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_content_frame, homeFragment,
+                        getString(R.string.tag_fragment_home));
+                transaction.addToBackStack(getString(R.string.tag_fragment_home));
+                transaction.commit();
+                menuItem.setChecked(true);
+                break;
+            }
+            case R.id.nav_connections:{
+                Log.d(TAG, "onNavigationItemSelected: ConnectionsFragment");
+                SavedConnectionsFragment savedConnectionsFragment = new SavedConnectionsFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_content_frame, savedConnectionsFragment,
+                        getString(R.string.tag_fragment_saved_connections));
+                transaction.addToBackStack(getString(R.string.tag_fragment_saved_connections));
+                transaction.commit();
+                menuItem.setChecked(true);
+                break;
+            }
+            case R.id.nav_messages:{
+                Log.d(TAG, "onNavigationItemSelected: MessagesFragment");
+                MessagesFragment messagesFragment = new MessagesFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_content_frame, messagesFragment,
+                        getString(R.string.tag_fragment_messages));
+                transaction.addToBackStack(getString(R.string.tag_fragment_messages));
+                transaction.commit();
+                menuItem.setChecked(true);
+                break;
+            }
+        }
+        return false;
     }
 
     private void init() {
@@ -75,4 +136,21 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
         transaction.addToBackStack(getString(R.string.tag_fragment_view_profile));
         transaction.commit();
     }
+
+    @Override
+    public void onMessageSelected(Message message) {
+        ChatFragment chatFragment = new ChatFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.intent_message),message);
+        chatFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_content_frame, chatFragment,
+                getString(R.string.tag_fragment_chat));
+        transaction.addToBackStack(getString(R.string.tag_fragment_chat));
+        transaction.commit();
+    }
+
+
 }

@@ -17,8 +17,10 @@ public class Users {
         return image;
     }
 
-    public User[] USERS = {John, Travis, Mildred, James, Henry, Elizabeth, Eunice, Jessica, Mary, Mark,
-            Ann, Christopher};
+    public User[] USERS = {John, Mark,Ann,Christopher,Travis, Mildred, James, Henry, Elizabeth,
+            Eunice,
+            Jessica,
+            Mary};
 
     public static final User John = new User(getProfileImage(R.drawable.john), "John", "Male",
             "Female",
