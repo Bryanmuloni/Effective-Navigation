@@ -6,27 +6,39 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.sirikyebrian.androideffectivenavigation.Utils.IMainActivity;
 import com.sirikyebrian.androideffectivenavigation.Utils.PreferenceKeys;
+import com.sirikyebrian.androideffectivenavigation.fragments.AgreementFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.ChatFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.HomeFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.MessagesFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.SavedConnectionsFragment;
+import com.sirikyebrian.androideffectivenavigation.fragments.SettingsFragment;
 import com.sirikyebrian.androideffectivenavigation.fragments.ViewProfileFragment;
 import com.sirikyebrian.androideffectivenavigation.models.Message;
 import com.sirikyebrian.androideffectivenavigation.models.User;
 
-public class MainActivity extends AppCompatActivity implements IMainActivity, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements IMainActivity,
+        BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
     private BottomNavigationViewEx mBottomNavigationViewEx;
+    private ImageView mHeaderImage;
+    private DrawerLayout mDrawerLayout;
 
 
     @Override
@@ -37,8 +49,15 @@ public class MainActivity extends AppCompatActivity implements IMainActivity, Bo
         mBottomNavigationViewEx = findViewById(R.id.bottom_nav_view);
         mBottomNavigationViewEx.setOnNavigationItemSelectedListener(this);
 
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+        mHeaderImage = headerView.findViewById(R.id.header_image);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
         isFirstLogin();
         initBottomNavigationView();
+        setNavigationViewListener();
+        setHeaderImage();
         init();
     }
 
@@ -50,6 +69,30 @@ public class MainActivity extends AppCompatActivity implements IMainActivity, Bo
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
+            case R.id.navigation_home: {
+                init();
+                break;
+            }
+            case R.id.navigation_settings: {
+                Log.d(TAG, "onNavigationItemSelected: SettingsFragment");
+                SettingsFragment settingsFragment = new SettingsFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_content_frame, settingsFragment,
+                        getString(R.string.tag_fragment_settings));
+                transaction.addToBackStack(getString(R.string.tag_fragment_settings));
+                transaction.commit();
+                break;
+            }
+            case R.id.navigation_agreement: {
+                Log.d(TAG, "onNavigationItemSelected: AgreementFragment");
+                AgreementFragment agreementFragment = new AgreementFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_content_frame, agreementFragment,
+                        getString(R.string.tag_fragment_agreement));
+                transaction.addToBackStack(getString(R.string.tag_fragment_agreement));
+                transaction.commit();
+                break;
+            }
             case R.id.nav_home:{
                 Log.d(TAG, "onNavigationItemSelected: HomeFragment");
                 HomeFragment homeFragment = new HomeFragment();
@@ -84,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivity, Bo
                 break;
             }
         }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 
@@ -94,6 +138,19 @@ public class MainActivity extends AppCompatActivity implements IMainActivity, Bo
                 getString(R.string.tag_fragment_home));
         transaction.addToBackStack(getString(R.string.tag_fragment_home));
         transaction.commit();
+    }
+
+    private void setNavigationViewListener(){
+        Log.d(TAG, "setNavigationViewListener: initializing navigation drawer listener");
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setHeaderImage() {
+        Log.d(TAG, "setHeaderImage: setting header image for navigation drawer");
+        Glide.with(this)
+                .load(R.drawable.couple)
+                .into(mHeaderImage);
     }
 
     private void isFirstLogin() {

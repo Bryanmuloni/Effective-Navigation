@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_one">
+        <item
+            android:id="@+id/navigation_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/tag_fragment_home" />
+        <item
+            android:id="@+id/navigation_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+    </group>
+   <group android:id="@+id/group_two">
+       <item
+           android:id="@+id/navigation_agreement"
+           android:icon="@drawable/ic_areement"
+           android:title="@string/tag_fragment_agreement" />
+   </group>
+</menu>
