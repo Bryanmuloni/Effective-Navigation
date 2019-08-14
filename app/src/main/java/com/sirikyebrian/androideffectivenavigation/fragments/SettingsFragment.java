@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.sirikyebrian.androideffectivenavigation.ChoosePhotoActivity;
 import com.sirikyebrian.androideffectivenavigation.R;
 import com.sirikyebrian.androideffectivenavigation.Utils.IMainActivity;
 import com.sirikyebrian.androideffectivenavigation.Utils.PreferenceKeys;
@@ -177,16 +178,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
             savePreferences();
         }
 
-//        if(view.getId() == R.id.profile_image){
-//            Log.d(TAG, "onClick: opening activity to choose a photo.");
-//            if(mPermissionsChecked){
-//                Intent intent = new Intent(getActivity(), ChoosePhotoActivity.class);
-//                startActivityForResult(intent, NEW_PHOTO_REQUEST);
-//            }
-//            else{
-//                checkPermissions();
-//            }
-//        }
+        if(view.getId() == R.id.profile_image){
+            Log.d(TAG, "onClick: opening activity to choose a photo.");
+            if(mPermissionsChecked){
+                Intent intent = new Intent(getActivity(), ChoosePhotoActivity.class);
+                startActivityForResult(intent, NEW_PHOTO_REQUEST);
+            }
+            else{
+                checkPermissions();
+            }
+        }
     }
 
     @Override

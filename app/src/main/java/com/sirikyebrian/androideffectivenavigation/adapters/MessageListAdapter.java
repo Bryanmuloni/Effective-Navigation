@@ -30,8 +30,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     private static final String TAG = "MessageListAdapter";
 
-    private ArrayList<User> mUsers = new ArrayList<>();
-    private ArrayList<User> mFilteredUsers = new ArrayList<>();
+    private ArrayList<User> mUsers;
+    private ArrayList<User> mFilteredUsers;
 
     private Context mContext;
     private IMainActivity mInterface;
