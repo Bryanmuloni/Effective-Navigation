@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -28,7 +29,7 @@ import java.util.Set;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MessagesFragment extends Fragment {
+public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = MessagesFragment.class.getSimpleName();
 
@@ -39,11 +40,7 @@ public class MessagesFragment extends Fragment {
     private ArrayList<User> mUserList = new ArrayList<>();
 
     private SearchView mSearchView;
-
-    public MessagesFragment() {
-        // Required empty public constructor
-    }
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +49,8 @@ public class MessagesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
         mRecyclerView = view.findViewById(R.id.messagesRecyclerView);
         mSearchView = view.findViewById(R.id.search_view);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         getConnections();
         initSearchView();
@@ -111,4 +110,13 @@ public class MessagesFragment extends Fragment {
 
     }
 
+    @Override
+    public void onRefresh() {
+        getConnections();
+        onItemsLoadComplete();
+    }
+    private void onItemsLoadComplete() {
+        mMessageListAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 }

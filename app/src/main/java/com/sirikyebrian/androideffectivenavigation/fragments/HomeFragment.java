@@ -3,6 +3,7 @@ package com.sirikyebrian.androideffectivenavigation.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomeFragment";
 
     private static final int NUM_COLUMNS = 2;
@@ -30,11 +31,10 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
+
 
 
     @Override
@@ -44,6 +44,8 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         Log.d(TAG, "onCreateView: started");
         recyclerView = rootView.findViewById(R.id.userListRecyclerView);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         findMatches();
 
@@ -72,4 +74,19 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(userListAdapter);
     }
 
+    public void scrollToTop(){
+        recyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onRefresh() {
+        findMatches();
+        onItemsLoadComplete();
+
+    }
+
+        private void onItemsLoadComplete() {
+            userListAdapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
 }

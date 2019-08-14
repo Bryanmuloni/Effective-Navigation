@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -26,7 +27,7 @@ import java.util.Set;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SavedConnectionsFragment extends Fragment {
+public class SavedConnectionsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = SavedConnectionsFragment.class.getSimpleName();
 
@@ -36,11 +37,8 @@ public class SavedConnectionsFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
     private ArrayList<User> mUserList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-
-    public SavedConnectionsFragment() {
-        // Required empty public constructor
-    }
 
 
     @Override
@@ -51,6 +49,8 @@ public class SavedConnectionsFragment extends Fragment {
         Log.d(TAG, "onCreateView: started");
 
         mRecyclerView = view.findViewById(R.id.connectionsRecyclerView);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         getConnections();
         return view;
@@ -85,4 +85,14 @@ public class SavedConnectionsFragment extends Fragment {
         mRecyclerView.setAdapter(mUserListAdapter);
     }
 
+    @Override
+    public void onRefresh() {
+        getConnections();
+        onLoadItemsComplete();
+    }
+
+    private void onLoadItemsComplete() {
+        mUserListAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 }
